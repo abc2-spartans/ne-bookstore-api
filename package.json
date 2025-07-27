@@ -1,0 +1,13 @@
+{
+  "name": "ne-bookstore-api",
+  "version": "1.0.0",
+  "description": "Bookstore API in node and express",
+  "main": "app.js",
+  "repository": "git@github.com:abc2-spartans/ne-bookstore-api.git",
+  "author": "Gaurav Kumar Singh <gauravsinghaec@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
