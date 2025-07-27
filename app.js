@@ -21,7 +21,9 @@ app.get("/health", (req, res) => {
 
 // CRUD endpoints for books
 app.get("/api/v1/books", (req, res) => {
-    res.status(200).json([]);
+    console.log(req.query)
+    res.status(200);
+    res.json([]);
 });
 
 app.listen(PORT, hostname, () => {
