@@ -1,5 +1,7 @@
 
 import express from 'express';
+import sqlite3 from 'sqlite3';
+import path from 'path';
 const hostname = '127.0.0.1';
 const PORT = 5000;
 const app = express();
@@ -7,14 +9,34 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+// SQLite DB setup
+const __dirname = path.resolve();
+const dbPath = path.join(__dirname, "bookstore.db");
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error("Failed to connect to database:", err.message);
+    } else {
+        console.log("Connected to the SQLite database.");
+    }
+});
+
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    published_year INTEGER
+  )`);
+});
+
 // Welcome message
 app.get("/", (req, res) => {
     res.status(200).send("Welcome to Bookstore API")
 });
 
 // Health check
-app.get("/health", (req, res) => {
-    res.status(200).json({
+app.get(["/api/v1", "/health"], (req, res) => {
+    res.json({
         status: "healthy",
         timestamp: new Date().toISOString(),
         service: "Bookstore API",
@@ -24,48 +46,57 @@ app.get("/health", (req, res) => {
 
 // CRUD endpoints for books
 app.get("/api/v1/books", (req, res) => {
-    console.log(req.query)
-    // Add read all books logic here
-    res.status(200);
-    res.json([]);
-});
-
-app.post("/api/v1/books", (req, res) => {
-    console.log(req.body)
-    const { title, author, published_year } = req.body;
-    if (!title || !author)
-        return res.status(400).json({ error: "Title and author required" });
-    // Add create logic here
-    res.status(201).json({ id: 1, title, author, published_year });
+    db.all("SELECT * FROM books", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
 });
 
 app.get("/api/v1/books/:id", (req, res) => {
-    console.log(req.params)
-    const id = req.params.id;
-    // Add read single book for given id logic here
-    const book = {
-        id,
-        title: "Book 1",
-        author: "Author 1",
-        published_year: 2020
-    }
-    res.status(201).json(book);
+    db.get("SELECT * FROM books WHERE id = ?", [req.params.id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: "Book not found" });
+        res.json(row);
+    });
+});
+
+app.post("/api/v1/books", (req, res) => {
+    const { title, author, published_year } = req.body;
+    if (!title || !author)
+        return res.status(400).json({ error: "Title and author required" });
+    db.run(
+        "INSERT INTO books (title, author, published_year) VALUES (?, ?, ?)",
+        [title, author, published_year],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.status(201).json({ id: this.lastID, title, author, published_year });
+        }
+    );
 });
 
 app.put("/api/v1/books/:id", (req, res) => {
-    const id = req.params.id;
     const { title, author, published_year } = req.body;
-    // Add update logic here
-    res.status(204).json({ message: "Book updated successfully" });
+    db.run(
+        "UPDATE books SET title = ?, author = ?, published_year = ? WHERE id = ?",
+        [title, author, published_year, req.params.id],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            if (this.changes === 0)
+                return res.status(404).json({ error: "Book not found" });
+            res.json({ id: req.params.id, title, author, published_year });
+        }
+    );
 });
-
 
 app.delete("/api/v1/books/:id", (req, res) => {
-    const id = req.params.id;
-    // Add delete logic here
-    res.status(204).json({ message: "Book deleted successfully" });
+    db.run("DELETE FROM books WHERE id = ?", [req.params.id], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        if (this.changes === 0)
+            return res.status(404).json({ error: "Book not found" });
+        res.status(204).send();
+    });
 });
 
-app.listen(PORT, hostname, () => {
-    console.log(`Server running at http://${hostname}:${PORT}/`);
+app.listen(PORT, () => {
+    console.log(`Bookstore API listening at http://localhost:${PORT}`);
 });
