@@ -6,29 +6,22 @@ const app = express();
 
 // Welcome message
 app.get("/", (req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end("Welcome to Bookstore API")
+    res.status(200).send("Welcome to Bookstore API")
 });
 
 // Health check
 app.get("/health", (req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    const healthData = {
+    res.status(200).json({
         status: "healthy",
         timestamp: new Date().toISOString(),
         service: "Bookstore API",
         apiURL: `http://localhost:${PORT}/api/v1/books`,
-    };
-    res.end(JSON.stringify(healthData));
+    });
 });
 
 // CRUD endpoints for books
 app.get("/api/v1/books", (req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end('[]');
+    res.status(200).json([]);
 });
 
 app.listen(PORT, hostname, () => {
