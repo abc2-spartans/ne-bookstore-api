@@ -1,5 +1,5 @@
 import * as bookService from '../services/books.service.js';
-import { success, created, badRequest, serverError } from '../utils/apiResponse.js';
+import { success, created, notFound, badRequest, serverError } from '../utils/apiResponse.js';
 
 /**
  * Get all books
@@ -22,15 +22,14 @@ export const getBooks = async (req, res) => {
  */
 export const getBook = async (req, res) => {
     try {
-        const { id } = req.params;
-        const book = await bookService.getBookById(id, res);
-
-        if (book) {
-            success(res, book, 'Book retrieved successfully');
+        const book = await bookService.getBookById(parseInt(req.params.id), res);
+        if (!book) {
+            return notFound(res, 'Book not found');
         }
-        // If book is null, the notFound response was already sent
+        success(res, book, 'Book retrieved successfully');
     } catch (error) {
-        serverError(res, error);
+        console.error('Error in getBook:', error);
+        serverError(res, 'Failed to retrieve book');
     }
 };
 
@@ -41,14 +40,17 @@ export const getBook = async (req, res) => {
  */
 export const createBook = async (req, res) => {
     try {
-        const bookData = req.body;
-        const newBook = await bookService.createBook(bookData, res);
+        const { title, author, published_year } = req.body;
 
-        if (newBook) {
-            created(res, newBook, 'Book created successfully');
+        if (!title || !author) {
+            return badRequest(res, 'Title and author are required');
         }
+
+        const newBook = await bookService.createBook({ title, author, published_year }, res);
+        created(res, 'Book created successfully', newBook);
     } catch (error) {
-        badRequest(res, error.message, error);
+        console.error('Error in createBook:', error);
+        badRequest(res, error.message);
     }
 };
 
@@ -60,15 +62,26 @@ export const createBook = async (req, res) => {
 export const updateBook = async (req, res) => {
     try {
         const { id } = req.params;
-        const bookData = req.body;
+        const { title, author, published_year } = req.body;
 
-        const updatedBook = await bookService.updateBook(id, bookData, res);
-
-        if (updatedBook) {
-            success(res, updatedBook, 'Book updated successfully');
+        if (!title || !author) {
+            return badRequest(res, 'Title and author are required');
         }
+
+        const updatedBook = await bookService.updateBook(
+            parseInt(id),
+            { title, author, published_year },
+            res
+        );
+
+        if (!updatedBook) {
+            return notFound(res, 'Book not found');
+        }
+
+        success(res, updatedBook, 'Book updated successfully');
     } catch (error) {
-        badRequest(res, error.message, error);
+        console.error('Error in updateBook:', error);
+        serverError(res, 'Failed to update book');
     }
 };
 
@@ -79,14 +92,14 @@ export const updateBook = async (req, res) => {
  */
 export const deleteBook = async (req, res) => {
     try {
-        const { id } = req.params;
-        const deleted = await bookService.deleteBook(id, res);
-
-        if (deleted) {
-            success(res, null, 'Book deleted successfully');
+        const deleted = await bookService.deleteBook(parseInt(req.params.id), res);
+        if (!deleted) {
+            return notFound(res, 'Book not found');
         }
+        res.status(204).send();
     } catch (error) {
-        serverError(res, error);
+        console.error('Error in deleteBook:', error);
+        serverError(res, 'Failed to delete book');
     }
 };
 

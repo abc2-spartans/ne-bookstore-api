@@ -1,8 +1,10 @@
 // Health check endpoints
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
 import booksRouter from './books.js';
 import { getConfig } from '../config/index.js';
+import swaggerSpec from '../config/swagger.config.js';
 
 dotenv.config();
 
@@ -53,5 +55,19 @@ router.get('/health', (req, res) => {
 
 // API v1 routes
 router.use('/books', booksRouter);
+
+// API Documentation with Swagger
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Bookstore API Documentation',
+    customfavIcon: 'https://via.placeholder.com/32x32',
+    swaggerOptions: {
+        docExpansion: 'list',
+        filter: true,
+        showRequestDuration: true,
+    },
+}));
+
 
 export default router;

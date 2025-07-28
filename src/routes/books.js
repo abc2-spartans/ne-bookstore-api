@@ -1,5 +1,5 @@
 import express from 'express';
-import * as booksController from '../controllers/books.controller.js';
+import { getBooks, getBook, createBook, updateBook, deleteBook } from '../controllers/books.controller.js';
 
 const router = express.Router();
 
@@ -9,11 +9,33 @@ const router = express.Router();
  *   get:
  *     summary: Get all books
  *     description: Retrieve a list of all books
+ *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Maximum number of books to return
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *         description: Number of books to skip
  *     responses:
  *       200:
  *         description: A list of books
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Book'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
-router.get('/', booksController.getBooks);
+router.get('/', getBooks);
 
 /**
  * @swagger
@@ -34,7 +56,7 @@ router.get('/', booksController.getBooks);
  *       404:
  *         description: Book not found
  */
-router.get('/:id', booksController.getBook);
+router.get('/:id', getBook);
 
 /**
  * @swagger
@@ -64,7 +86,7 @@ router.get('/:id', booksController.getBook);
  *       400:
  *         description: Invalid input
  */
-router.post('/', booksController.createBook);
+router.post('/', createBook);
 
 /**
  * @swagger
@@ -100,7 +122,7 @@ router.post('/', booksController.createBook);
  *       404:
  *         description: Book not found
  */
-router.put('/:id', booksController.updateBook);
+router.put('/:id', updateBook);
 
 /**
  * @swagger
@@ -121,6 +143,6 @@ router.put('/:id', booksController.updateBook);
  *       404:
  *         description: Book not found
  */
-router.delete('/:id', booksController.deleteBook);
+router.delete('/:id', deleteBook);
 
 export default router;
