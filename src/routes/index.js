@@ -1,7 +1,10 @@
 // Health check endpoints
 import express from 'express';
+import dotenv from 'dotenv';
 import booksRouter from './books.js';
 import { getConfig } from '../config/index.js';
+
+dotenv.config();
 
 const router = express.Router();
 const config = getConfig();
