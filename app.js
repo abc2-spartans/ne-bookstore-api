@@ -5,6 +5,8 @@ import { initDatabase } from './src/db/init.js';
 import apiRoutes from './src/routes/index.js';
 import { getConfig } from './src/config/index.js';
 import { serverError, notFound } from './src/utils/apiResponse.js';
+import swaggerSpec from './src/config/swagger.config.js';
+import swaggerUi from 'swagger-ui-express';
 
 // Initialize environment variables
 dotenv.config();
@@ -19,11 +21,14 @@ app.use(express.json());
 // API Routes
 app.use('/api/v1', apiRoutes);
 
+// Serve Swagger UI -  API Documentation with Swagger
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 404 Handler
 app.use((req, res) => {
     notFound(res, 'The requested resource was not found');
 });
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {
