@@ -2,16 +2,21 @@
 import express from 'express';
 import sqlite3 from 'sqlite3';
 import path from 'path';
-const hostname = '127.0.0.1';
-const PORT = 5000;
+import dotenv from 'dotenv';
+import { getConfig } from './config/index.js';
+
 const app = express();
+dotenv.config();
 
 // Middleware
 app.use(express.json());
 
+
+const config = getConfig();
+
 // SQLite DB setup
 const __dirname = path.resolve();
-const dbPath = path.join(__dirname, "bookstore.db");
+const dbPath = path.join(__dirname, config.sqlite.database);
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error("Failed to connect to database:", err.message);
@@ -40,7 +45,7 @@ app.get(["/api/v1", "/health"], (req, res) => {
         status: "healthy",
         timestamp: new Date().toISOString(),
         service: "Bookstore API",
-        apiURL: `http://localhost:${PORT}/api/v1/books`,
+        apiURL: `http://${config.app.hostname}:${config.app.port}/api/v1/books`,
     });
 });
 
@@ -97,6 +102,6 @@ app.delete("/api/v1/books/:id", (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Bookstore API listening at http://localhost:${PORT}`);
+app.listen(config.app.port, config.app.hostname, () => {
+    console.log(`Bookstore API listening at http://${config.app.hostname}:${config.app.port}`);
 });
