@@ -7,6 +7,10 @@
   "author": "Gaurav Kumar Singh <gauravsinghaec@gmail.com>",
   "license": "MIT",
   "private": false,
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": ">=1.22.0"
+  },
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
