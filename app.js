@@ -1,107 +1,77 @@
 
 import express from 'express';
-import sqlite3 from 'sqlite3';
-import path from 'path';
 import dotenv from 'dotenv';
-import { getConfig } from './config/index.js';
+import { initDatabase } from './src/db/init.js';
+import apiRoutes from './src/routes/index.js';
+import { getConfig } from './src/config/index.js';
+import { serverError, notFound } from './src/utils/apiResponse.js';
 
-const app = express();
+// Initialize environment variables
 dotenv.config();
+const config = getConfig();
+
+// Initialize Express app
+const app = express();
 
 // Middleware
 app.use(express.json());
 
+// API Routes
+app.use('/api/v1', apiRoutes);
 
-const config = getConfig();
 
-// SQLite DB setup
-const __dirname = path.resolve();
-const dbPath = path.join(__dirname, config.sqlite.database);
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error("Failed to connect to database:", err.message);
-    } else {
-        console.log("Connected to the SQLite database.");
+// 404 Handler
+app.use((req, res) => {
+    notFound(res, 'The requested resource was not found');
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err);
+    serverError(res, err);
+});
+
+// Initialize database and start server
+const startServer = async () => {
+    try {
+        // Initialize database
+        await initDatabase();
+        console.log('Database initialized successfully');
+
+        // Start the server
+        const server = app.listen(config.app.port, () => {
+            console.log(`Server is running on http://${config.app.hostname}:${config.app.port}`);
+            console.log(`API Documentation: http://${config.app.hostname}:${config.app.port}/api/v1`);
+        });
+
+        // Handle unhandled promise rejections
+        process.on('unhandledRejection', (err) => {
+            console.error('UNHANDLED REJECTION! 💥 Shutting down...');
+            console.error(err);
+            server.close(() => {
+                process.exit(1);
+            });
+        });
+    } catch (error) {
+        console.error('Failed to initialize database:', error);
+        process.exit(1);
     }
+};
+
+// Start the application
+startServer();
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+    console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+    console.error(err);
+    process.exit(1);
 });
 
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    published_year INTEGER
-  )`);
+// Handle SIGTERM
+process.on('SIGTERM', () => {
+    console.log('SIGTERM RECEIVED. Shutting down gracefully');
+    process.exit(0);
 });
 
-// Welcome message
-app.get("/", (req, res) => {
-    res.status(200).send("Welcome to Bookstore API")
-});
-
-// Health check
-app.get(["/api/v1", "/health"], (req, res) => {
-    res.json({
-        status: "healthy",
-        timestamp: new Date().toISOString(),
-        service: "Bookstore API",
-        apiURL: `http://${config.app.hostname}:${config.app.port}/api/v1/books`,
-    });
-});
-
-// CRUD endpoints for books
-app.get("/api/v1/books", (req, res) => {
-    db.all("SELECT * FROM books", [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
-});
-
-app.get("/api/v1/books/:id", (req, res) => {
-    db.get("SELECT * FROM books WHERE id = ?", [req.params.id], (err, row) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (!row) return res.status(404).json({ error: "Book not found" });
-        res.json(row);
-    });
-});
-
-app.post("/api/v1/books", (req, res) => {
-    const { title, author, published_year } = req.body;
-    if (!title || !author)
-        return res.status(400).json({ error: "Title and author required" });
-    db.run(
-        "INSERT INTO books (title, author, published_year) VALUES (?, ?, ?)",
-        [title, author, published_year],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.status(201).json({ id: this.lastID, title, author, published_year });
-        }
-    );
-});
-
-app.put("/api/v1/books/:id", (req, res) => {
-    const { title, author, published_year } = req.body;
-    db.run(
-        "UPDATE books SET title = ?, author = ?, published_year = ? WHERE id = ?",
-        [title, author, published_year, req.params.id],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            if (this.changes === 0)
-                return res.status(404).json({ error: "Book not found" });
-            res.json({ id: req.params.id, title, author, published_year });
-        }
-    );
-});
-
-app.delete("/api/v1/books/:id", (req, res) => {
-    db.run("DELETE FROM books WHERE id = ?", [req.params.id], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        if (this.changes === 0)
-            return res.status(404).json({ error: "Book not found" });
-        res.status(204).send();
-    });
-});
-
-app.listen(config.app.port, config.app.hostname, () => {
-    console.log(`Bookstore API listening at http://${config.app.hostname}:${config.app.port}`);
-});
+export default app;
