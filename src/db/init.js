@@ -1,46 +1,54 @@
-import sqlite3 from 'sqlite3';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { getConfig } from '../config/index.js';
+import { Pool } from "pg";
+import { getConfig } from "../config/index.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const config = getConfig();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-const dbPath = path.join(__dirname, "../../", config.database.sqlite.database);
+// Create a new PostgreSQL pool
+export const db = new Pool({
+  user: config.database.postgres.user,
+  host: config.database.postgres.host,
+  database: config.database.postgres.database,
+  password: config.database.postgres.password,
+  port: config.database.postgres.port,
+});
 
-// Create and export the database connection
-export const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error("Failed to connect to database:", err.message);
-    } else {
-        console.log("Connected to the SQLite database.");
-    }
+// Test the database connection
+db.query("SELECT NOW()", (err) => {
+  if (err) {
+    console.error("Failed to connect to PostgreSQL:", err);
+  } else {
+    console.log("Connected to PostgreSQL database");
+  }
 });
 
 // Initialize database tables
-export const initDatabase = () => {
-    return new Promise((resolve, reject) => {
-        db.serialize(() => {
-            db.run(`CREATE TABLE IF NOT EXISTS books (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                author TEXT NOT NULL,
+export const initDatabase = async () => {
+  const client = await db.connect();
+  try {
+    await client.query("BEGIN");
+
+    await client.query(`
+            CREATE TABLE IF NOT EXISTS books (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                author VARCHAR(255) NOT NULL,
                 published_year INTEGER
-            )`, (err) => {
-                if (err) {
-                    console.error("Error creating books table:", err);
-                    reject(err);
-                } else {
-                    console.log("Database tables initialized");
-                    resolve();
-                }
-            });
-        });
-    });
+            )`);
+
+    await client.query("COMMIT");
+    console.log("Database tables created successfully");
+  } catch (err) {
+    console.error("Error initializing database:", err);
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
 };
 
 export default {
-    db,
-    initDatabase
+  db,
+  initDatabase,
 };

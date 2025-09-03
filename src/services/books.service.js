@@ -3,141 +3,87 @@ import { notFound } from '../utils/apiResponse.js';
 
 /**
  * Get all books
- * @param {Object} res - Express response object
+ * @returns {Promise<Array>} Array of books
  */
-export const getAllBooks = async (res) => {
-    try {
-        const books = await new Promise((resolve, reject) => {
-            Book.getAll((err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
-            });
-        });
-        return books;
-    } catch (error) {
-        console.error(error)
-        throw new Error('Failed to fetch books');
-    }
+export const getAllBooks = async () => {
+  try {
+    return await Book.getAll();
+  } catch (error) {
+    console.error("Error in getAllBooks:", error);
+    throw new Error("Failed to fetch books");
+  }
 };
 
 /**
  * Get a single book by ID
  * @param {number} id - Book ID
- * @param {Object} res - Express response object
+ * @returns {Promise<Object|null>} Book object or null if not found
  */
-export const getBookById = async (id, res) => {
-    try {
-        const book = await new Promise((resolve, reject) => {
-            Book.getById(id, (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            });
-        });
-
-        if (!book) {
-            notFound(res, 'Book not found');
-            return null;
-        }
-
-        return book;
-    } catch (error) {
-        console.error(error)
-        throw new Error('Failed to fetch book');
+export const getBookById = async (id) => {
+  try {
+    const book = await Book.getById(id);
+    if (!book) {
+      return notFound("Book not found");
     }
+    return book;
+  } catch (error) {
+    console.error("Error in getBookById:", error);
+    throw new Error("Failed to fetch book");
+  }
 };
 
 /**
  * Create a new book
  * @param {Object} bookData - Book data
- * @param {Object} res - Express response object
+ * @returns {Promise<Object>} Created book
  */
-export const createBook = async (bookData, res) => {
-    try {
-        const { title, author, published_year } = bookData;
-
-        if (!title || !author) {
-            throw new Error('Title and author are required');
-        }
-
-        const newBook = await new Promise((resolve, reject) => {
-            Book.create(bookData, (err, book) => {
-                if (err) reject(err);
-                else resolve(book);
-            });
-        });
-
-        return newBook;
-    } catch (error) {
-        console.error(error)
-        throw new Error('Failed to create book');
-    }
+export const createBook = async (bookData) => {
+  try {
+    const newBook = await Book.create(bookData);
+    return newBook;
+  } catch (error) {
+    console.error("Error in createBook:", error);
+    throw new Error("Failed to create book");
+  }
 };
 
 /**
  * Update a book
  * @param {number} id - Book ID
  * @param {Object} bookData - Updated book data
- * @param {Object} res - Express response object
+ * @returns {Promise<Object|null>} Updated book or null if not found
  */
-export const updateBook = async (id, bookData, res) => {
-    try {
-        // First check if book exists
-        const existingBook = await new Promise((resolve, reject) => {
-            Book.getById(id, (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            });
-        });
-
-        if (!existingBook) {
-            notFound(res, 'Book not found');
-            return null;
-        }
-
-        await new Promise((resolve, reject) => {
-            Book.update(id, bookData, (err) => {
-                if (err) reject(err);
-                else resolve();
-            });
-        });
-
-        return { id, ...bookData };
-    } catch (error) {
-        console.error(error)
-        throw new Error('Failed to update book');
+export const updateBook = async (id, bookData) => {
+  try {
+    const existingBook = await Book.getById(id);
+    if (!existingBook) {
+      return null;
     }
+
+    const updatedBook = await Book.update(id, bookData);
+    return updatedBook;
+  } catch (error) {
+    console.error("Error in updateBook:", error);
+    throw new Error("Failed to update book");
+  }
 };
 
 /**
  * Delete a book
  * @param {number} id - Book ID
- * @param {Object} res - Express response object
+ * @returns {Promise<boolean>} True if deleted, false if not found
  */
-export const deleteBook = async (id, res) => {
-    try {
-        // First check if book exists
-        const existingBook = await new Promise((resolve, reject) => {
-            Book.getById(id, (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            });
-        });
-
-        if (!existingBook) {
-            notFound(res, 'Book not found');
-            return false;
-        }
-
-        await new Promise((resolve, reject) => {
-            Book.delete(id, (err) => {
-                if (err) reject(err);
-                else resolve();
-            });
-        });
-
-        return true;
-    } catch (error) {
-        console.error(error)
-        throw new Error('Failed to delete book');
+export const deleteBook = async (id) => {
+  try {
+    const existingBook = await Book.getById(id);
+    if (!existingBook) {
+      return false;
     }
+
+    const result = await Book.delete(id);
+    return !!result;
+  } catch (error) {
+    console.error("Error in deleteBook:", error);
+    throw new Error("Failed to delete book");
+  }
 };

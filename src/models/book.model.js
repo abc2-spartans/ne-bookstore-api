@@ -1,37 +1,41 @@
 import { db } from '../db/init.js';
 
 class Book {
-    static getAll(callback) {
-        return db.all('SELECT * FROM books', callback);
-    }
+  static async getAll() {
+    const result = await db.query("SELECT * FROM books");
+    return result.rows;
+  }
 
-    static getById(id, callback) {
-        return db.get('SELECT * FROM books WHERE id = ?', [id], callback);
-    }
+  static async getById(id) {
+    const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
+    return result.rows[0] || null;
+  }
 
-    static create(book, callback) {
-        const { title, author, published_year } = book;
-        return db.run(
-            'INSERT INTO books (title, author, published_year) VALUES (?, ?, ?)',
-            [title, author, published_year],
-            function (err) {
-                callback(err, { id: this.lastID, ...book });
-            }
-        );
-    }
+  static async create(book) {
+    const { title, author, published_year } = book;
+    const result = await db.query(
+      "INSERT INTO books (title, author, published_year) VALUES ($1, $2, $3) RETURNING *",
+      [title, author, published_year]
+    );
+    return result.rows[0];
+  }
 
-    static update(id, book, callback) {
-        const { title, author, published_year } = book;
-        return db.run(
-            'UPDATE books SET title = ?, author = ?, published_year = ? WHERE id = ?',
-            [title, author, published_year, id],
-            callback
-        );
-    }
+  static async update(id, book) {
+    const { title, author, published_year } = book;
+    const result = await db.query(
+      "UPDATE books SET title = $1, author = $2, published_year = $3 WHERE id = $4 RETURNING *",
+      [title, author, published_year, id]
+    );
+    return result.rows[0] || null;
+  }
 
-    static delete(id, callback) {
-        return db.run('DELETE FROM books WHERE id = ?', [id], callback);
-    }
+  static async delete(id) {
+    const result = await db.query(
+      "DELETE FROM books WHERE id = $1 RETURNING *",
+      [id]
+    );
+    return result.rows[0] || null;
+  }
 }
 
 export default Book;
