@@ -40,12 +40,6 @@ export const getConfig = () => {
         mongodb: {
           uri: process.env.MONGODB_URI || "mongodb://localhost:27017",
           dbName: process.env.MONGODB_DB_NAME || "bookstore",
-          options: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000,
-            socketTimeoutMS: 45000,
-          },
         },
 
         // Add other database configurations as needed

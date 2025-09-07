@@ -54,7 +54,7 @@ router.get('/health', (req, res) => {
 });
 
 // API v1 routes
-router.use('/books', booksRouter);
+router.use("/books", booksRouter);
 
 // API Documentation with Swagger
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {

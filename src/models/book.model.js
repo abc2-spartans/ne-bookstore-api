@@ -1,41 +1,66 @@
-import { db } from '../db/init.js';
+import { mongoDb } from "../db/init.js";
+import { ObjectId } from "mongodb";
 
-class Book {
-  static async getAll() {
-    const result = await db.query("SELECT * FROM books");
-    return result.rows;
+const COLLECTION = "books";
+
+class BookMongo {}
+
+BookMongo.getAll = async () => {
+  try {
+    return await mongoDb.collection(COLLECTION).find({}).toArray();
+  } catch (error) {
+    console.error("DB error in getAll:", error);
+    throw error;
   }
+};
 
-  static async getById(id) {
-    const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
-    return result.rows[0] || null;
+BookMongo.getById = async (id) => {
+  try {
+    return await mongoDb
+      .collection(COLLECTION)
+      .findOne({ _id: new ObjectId(id) });
+  } catch (error) {
+    console.error("DB error in getById:", error);
+    throw error;
   }
+};
 
-  static async create(book) {
-    const { title, author, published_year } = book;
-    const result = await db.query(
-      "INSERT INTO books (title, author, published_year) VALUES ($1, $2, $3) RETURNING *",
-      [title, author, published_year]
-    );
-    return result.rows[0];
+BookMongo.create = async (book) => {
+  try {
+    const result = await mongoDb.collection(COLLECTION).insertOne(book);
+    return { ...book, _id: result.insertedId };
+  } catch (error) {
+    console.error("DB error in create:", error);
+    throw error;
   }
+};
 
-  static async update(id, book) {
-    const { title, author, published_year } = book;
-    const result = await db.query(
-      "UPDATE books SET title = $1, author = $2, published_year = $3 WHERE id = $4 RETURNING *",
-      [title, author, published_year, id]
-    );
-    return result.rows[0] || null;
+BookMongo.update = async (id, book) => {
+  try {
+    const result = await mongoDb
+      .collection(COLLECTION)
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: book },
+        { returnDocument: "after" }
+      );
+    return result;
+  } catch (error) {
+    console.error("DB error in update:", error);
+    throw error;
   }
+};
 
-  static async delete(id) {
-    const result = await db.query(
-      "DELETE FROM books WHERE id = $1 RETURNING *",
-      [id]
-    );
-    return result.rows[0] || null;
+BookMongo.delete = async (id) => {
+  try {
+    const result = await mongoDb
+      .collection(COLLECTION)
+      .findOneAndDelete({ _id: new ObjectId(id) });
+    return result;
+  } catch (error) {
+    console.error("DB error in delete:", error);
+    throw error;
   }
-}
+};
 
-export default Book;
+export default BookMongo;
