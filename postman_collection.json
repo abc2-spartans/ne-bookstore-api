@@ -30,7 +30,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"author\": \"willian h.mclaren 2\",\n    \"title\":\"make your bed 3\",\n    \"published_year\":\"2016\"\n}",
+					"raw": "{\n\t\"author\": \"willian h.mclaren 2\",\n    \"title\":\"make your bed 3\",\n    \"published_year\": 2016\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -38,11 +38,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/books",
+					"raw": "{{baseUrl}}/{{apiVersion}}/books",
 					"host": [
-						"{{base_url}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"{{apiVersion}}",
 						"books"
 					]
 				},
@@ -82,11 +83,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/books",
+					"raw": "{{baseUrl}}/{{apiVersion}}/books",
 					"host": [
-						"{{base_url}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"{{apiVersion}}",
 						"books"
 					]
 				},
@@ -117,13 +119,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/books/1",
+					"raw": "{{baseUrl}}/{{apiVersion}}/books/{{id}}",
 					"host": [
-						"{{base_url}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"{{apiVersion}}",
 						"books",
-						"1"
+						"{{id}}"
 					]
 				},
 				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -152,7 +155,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"author\": \"willian h.mclaren 2\",\n    \"title\":\"make your bed 32\",\n    \"published_year\":\"2016\"\n}",
+					"raw": "{\n\t\"author\": \"willian h.mclaren\",\n    \"title\":\"make your bed\",\n    \"published_year\":\"2016\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -160,11 +163,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/books/{{id}}",
+					"raw": "{{baseUrl}}/{{apiVersion}}/books/{{id}}",
 					"host": [
-						"{{base_url}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"{{apiVersion}}",
 						"books",
 						"{{id}}"
 					]
@@ -194,16 +198,42 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/books/{{id}}",
+					"raw": "{{baseUrl}}/{{apiVersion}}/books/{{id}}",
 					"host": [
-						"{{base_url}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"{{apiVersion}}",
 						"books",
 						"{{id}}"
 					]
 				},
 				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{apiVersion}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{apiVersion}}",
+						"health"
+					]
+				}
 			},
 			"response": []
 		}
@@ -230,12 +260,16 @@
 	],
 	"variable": [
 		{
-			"key": "id",
-			"value": "1"
+			"key": "baseUrl",
+			"value": "http://localhost:5000"
 		},
 		{
-			"key": "base_url",
-			"value": "https://postman-rest-api-learner.glitch.me/"
+			"key": "apiVersion",
+			"value": "api/v1"
+		},
+		{
+			"key": "id",
+			"value": "1"
 		}
 	]
 }
