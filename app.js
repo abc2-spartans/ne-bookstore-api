@@ -1,7 +1,7 @@
 
 import express from 'express';
 import dotenv from 'dotenv';
-import { initDatabase, initMongoDB } from "./src/db/init.js";
+import { initMongoDB } from "./src/db/init.js";
 import apiRoutes from "./src/routes/index.js";
 import { getConfig } from "./src/config/index.js";
 import { serverError, notFound } from "./src/utils/apiResponse.js";
@@ -34,15 +34,9 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
   try {
     // Initialize databases
-    const dbType = config.database.type;
-    if (dbType === "postgres") {
-      await initDatabase();
-    } else if (dbType === "mongodb") {
-      await initMongoDB();
-    } else {
-      throw new Error("Invalid database type");
-    }
-    console.log(`Database ${dbType} initialized successfully`);
+    await initMongoDB();
+
+    console.log(`Database mongodb initialized successfully`);
 
     // Start the server
     const server = app.listen(config.app.port, () => {

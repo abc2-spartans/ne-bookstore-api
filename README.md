@@ -242,7 +242,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Gaurav Kumar Singh**
 - Email: gauravsinghaec@gmail.com
-- GitHub: [@gauravsingh](https://github.com/gauravsingh)
+- GitHub: [@gauravsingh](https://github.com/gauravsinghaec)
 
 ## 🔗 Related Projects
 
