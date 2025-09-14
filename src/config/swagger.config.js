@@ -36,7 +36,11 @@ const options = {
           type: "object",
           required: ["title", "author"],
           properties: {
-            id: { type: "integer", description: "Auto-generated book ID" },
+            id: {
+              type: "string",
+              format: "objectId",
+              description: "MongoDB ObjectId (auto-generated)",
+            },
             title: { type: "string", description: "Book title" },
             author: { type: "string", description: "Book author" },
             published_year: {
@@ -47,7 +51,7 @@ const options = {
             updated_at: { type: "string", format: "date-time" },
           },
           example: {
-            id: 1,
+            id: "652f9c7d7c7e4f1b8c8e4d1a",
             title: "The Great Gatsby",
             author: "F. Scott Fitzgerald",
             published_year: 1925,

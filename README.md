@@ -70,7 +70,7 @@ The server will start on `http://localhost:5000`
 ```json
 [
   {
-    "id": 1,
+    "id": "652f9c7d7c7e4f1b8c8e4d1a",
     "title": "The Great Gatsby",
     "author": "F. Scott Fitzgerald",
     "published_year": 1925
@@ -79,7 +79,7 @@ The server will start on `http://localhost:5000`
 ```
 
 #### Get Book by ID
-- **GET** `/api/v1/books/:id`
+- **GET** `/api/v1/books/:id` (where `id` is a MongoDB ObjectId string)
 - **Response:** Single book object or 404 if not found
 
 #### Create New Book
@@ -121,7 +121,7 @@ The server will start on `http://localhost:5000`
 - **Schema:**
   ```sql
   CREATE TABLE books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id VARCHAR(24) PRIMARY KEY -- MongoDB ObjectId
     title TEXT NOT NULL,
     author TEXT NOT NULL,
     published_year INTEGER
