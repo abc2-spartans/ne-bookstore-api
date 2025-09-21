@@ -1,5 +1,4 @@
-import BookMongo from "../models/book.model.js";
-import { notFound } from "../utils/apiResponse.js";
+import BookMongo from "../db/books.mongo.js";
 
 /**
  * Get all books

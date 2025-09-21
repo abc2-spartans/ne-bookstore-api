@@ -1,22 +1,23 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import { getConfig } from "../config/index.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 const config = getConfig();
-
-// MongoDB connection
-const mongoUri = config.database?.mongodb?.uri;
-const mongoClient = new MongoClient(mongoUri);
-let mongoDb;
-
+const mongoUri = `${config.database?.mongodb?.uri}/${config.database?.mongodb?.dbName}`;
+console.log({ mongoUri });
 export const initMongoDB = async () => {
-  await mongoClient.connect();
-  mongoDb = mongoClient.db();
-  console.log("Connected to MongoDB database");
+  try {
+    await mongoose.connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB via Mongoose");
+  } catch (error) {
+    console.error("Mongoose connection error:", error);
+    throw error;
+  }
 };
-
-export { mongoDb };
 
 export default {
   initMongoDB,

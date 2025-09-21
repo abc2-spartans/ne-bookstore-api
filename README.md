@@ -1,11 +1,27 @@
-# Node-Express Bookstore API
+# Node-Express Bookstore API (MongoDB + Mongoose version)
 
-A modern RESTful API for managing books, built with Node.js, Express.js, and SQLite using ES Modules.
+## MongoDB with Mongoose ORM
+
+This project now uses [Mongoose](https://mongoosejs.com/) as the ORM for MongoDB. All database operations are handled via Mongoose models and schemas.
+
+### Migration Notes
+- The `Book` model is now a Mongoose schema (`src/models/book.model.js`).
+- All CRUD operations are handled via Mongoose methods.
+- No direct usage of the MongoDB driver remains in the codebase.
+
+### Running the App
+- Install dependencies: `yarn install`
+- Start the server: `yarn start` or `node app.js`
+
+---
+
+
+A modern RESTful API for managing books, built with Node.js, Express.js, and MongoDB using Mongoose ORM and ES Modules.
 
 ## 🚀 Features
 
 - **Full CRUD Operations** - Create, Read, Update, Delete books
-- **SQLite Database** - Lightweight, file-based database
+- **MongoDB Database** - Powerful, scalable NoSQL database using Mongoose ORM
 - **ES Modules** - Modern JavaScript module system
 - **Health Check Endpoints** - Multiple health check routes
 - **JSON API** - RESTful JSON responses
@@ -16,6 +32,7 @@ A modern RESTful API for managing books, built with Node.js, Express.js, and SQL
 
 - **Node.js** 22.x or higher
 - **Yarn** 1.22.x or higher
+- **MongoDB** (local or cloud, e.g. MongoDB Atlas)
 
 ## 🛠️ Installation
 
@@ -73,7 +90,7 @@ The server will start on `http://localhost:5000`
     "id": "652f9c7d7c7e4f1b8c8e4d1a",
     "title": "The Great Gatsby",
     "author": "F. Scott Fitzgerald",
-    "published_year": 1925
+    "publishedYear": 1925
   }
 ]
 ```
@@ -91,7 +108,7 @@ The server will start on `http://localhost:5000`
 {
   "title": "Book Title",
   "author": "Author Name",
-  "published_year": 2023
+  "publishedYear": 2023
 }
 ```
 
@@ -106,7 +123,7 @@ The server will start on `http://localhost:5000`
 {
   "title": "Updated Title",
   "author": "Updated Author",
-  "published_year": 2024
+  "publishedYear": 2024
 }
 ```
 
@@ -116,17 +133,10 @@ The server will start on `http://localhost:5000`
 
 ## 🗄️ Database
 
-- **Type:** SQLite
-- **File:** `bookstore.db` (auto-created)
-- **Schema:**
-  ```sql
-  CREATE TABLE books (
-    id VARCHAR(24) PRIMARY KEY -- MongoDB ObjectId
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    published_year INTEGER
-  );
-  ```
+- **Type:** MongoDB
+- **ORM:** [Mongoose](https://mongoosejs.com/)
+- **Connection:** Set your MongoDB URI in `.env` or config (see `src/db/init.js`)
+- **Schema:** See `src/models/book.model.js` for the Mongoose schema definition.
 
 ## 📁 Project Structure
 
@@ -136,14 +146,21 @@ ne-bookstore-api/
 ├── package.json        # Dependencies and scripts
 ├── .gitignore         # Git ignore rules
 ├── README.md          # This file
-└── bookstore.db       # SQLite database (auto-created)
+├── src/
+│   ├── db/
+│   │   └── init.js      # MongoDB/Mongoose connection setup
+│   ├── models/
+│   │   └── book.model.js # Mongoose schema definition
+│   └── ...
+└── ...
 ```
 
 ## 🔧 Technologies Used
 
 - **[Node.js](https://nodejs.org/)** - JavaScript runtime
 - **[Express.js](https://expressjs.com/)** - Web framework
-- **[SQLite3](https://www.sqlite.org/)** - Database
+- **[MongoDB](https://www.mongodb.com/)** - Database
+- **[Mongoose](https://mongoosejs.com/)** - MongoDB ORM
 - **[Nodemon](https://nodemon.io/)** - Development auto-reload
 
 ## 🧪 Testing the API
@@ -159,7 +176,7 @@ curl http://localhost:5000/api/v1/books
 ```bash
 curl -X POST http://localhost:5000/api/v1/books \
   -H "Content-Type: application/json" \
-  -d '{"title":"1984","author":"George Orwell","published_year":1949}'
+  -d '{"title":"1984","author":"George Orwell","publishedYear":1949}'
 ```
 
 **Get a specific book:**
@@ -171,7 +188,7 @@ curl http://localhost:5000/api/v1/books/1
 ```bash
 curl -X PUT http://localhost:5000/api/v1/books/1 \
   -H "Content-Type: application/json" \
-  -d '{"title":"Animal Farm","author":"George Orwell","published_year":1945}'
+  -d '{"title":"Animal Farm","author":"George Orwell","publishedYear":1945}'
 ```
 
 **Delete a book:**
@@ -219,11 +236,11 @@ The API returns appropriate HTTP status codes:
 
 ## 🔒 Environment Variables
 
-Currently, the API uses default configuration. You can extend it by adding environment variables:
+Set your environment variables in a `.env` file:
 
 ```bash
-PORT=5000          # Server port (default: 5000)
-DB_PATH=./bookstore.db  # Database file path
+PORT=5000            # Server port (default: 5000)
+MONGODB_URI=your_mongodb_connection_string
 ```
 
 ## 🤝 Contributing
