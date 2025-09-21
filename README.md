@@ -73,7 +73,7 @@ The server will start on `http://localhost:5000`
     "id": 1,
     "title": "The Great Gatsby",
     "author": "F. Scott Fitzgerald",
-    "published_year": 1925
+    "publishedYear": 1925
   }
 ]
 ```
@@ -91,7 +91,7 @@ The server will start on `http://localhost:5000`
 {
   "title": "Book Title",
   "author": "Author Name",
-  "published_year": 2023
+  "publishedYear": 2023
 }
 ```
 
@@ -106,7 +106,7 @@ The server will start on `http://localhost:5000`
 {
   "title": "Updated Title",
   "author": "Updated Author",
-  "published_year": 2024
+  "publishedYear": 2024
 }
 ```
 
@@ -124,7 +124,7 @@ The server will start on `http://localhost:5000`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
-    published_year INTEGER
+    publishedYear INTEGER
   );
   ```
 
@@ -159,7 +159,7 @@ curl http://localhost:5000/api/v1/books
 ```bash
 curl -X POST http://localhost:5000/api/v1/books \
   -H "Content-Type: application/json" \
-  -d '{"title":"1984","author":"George Orwell","published_year":1949}'
+  -d '{"title":"1984","author":"George Orwell","publishedYear":1949}'
 ```
 
 **Get a specific book:**
@@ -171,7 +171,7 @@ curl http://localhost:5000/api/v1/books/1
 ```bash
 curl -X PUT http://localhost:5000/api/v1/books/1 \
   -H "Content-Type: application/json" \
-  -d '{"title":"Animal Farm","author":"George Orwell","published_year":1945}'
+  -d '{"title":"Animal Farm","author":"George Orwell","publishedYear":1945}'
 ```
 
 **Delete a book:**

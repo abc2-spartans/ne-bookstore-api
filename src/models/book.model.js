@@ -12,19 +12,19 @@ class Book {
   }
 
   static async create(book) {
-    const { title, author, published_year } = book;
+    const { title, author, publishedYear } = book;
     const result = await db.query(
-      "INSERT INTO books (title, author, published_year) VALUES ($1, $2, $3) RETURNING *",
-      [title, author, published_year]
+      "INSERT INTO books (title, author, publishedYear) VALUES ($1, $2, $3) RETURNING *",
+      [title, author, publishedYear]
     );
     return result.rows[0];
   }
 
   static async update(id, book) {
-    const { title, author, published_year } = book;
+    const { title, author, publishedYear } = book;
     const result = await db.query(
-      "UPDATE books SET title = $1, author = $2, published_year = $3 WHERE id = $4 RETURNING *",
-      [title, author, published_year, id]
+      "UPDATE books SET title = $1, author = $2, publishedYear = $3 WHERE id = $4 RETURNING *",
+      [title, author, publishedYear, id]
     );
     return result.rows[0] || null;
   }

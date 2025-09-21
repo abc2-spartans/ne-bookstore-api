@@ -39,19 +39,22 @@ export const getBook = async (req, res) => {
  * @param {Object} res - Express response object
  */
 export const createBook = async (req, res) => {
-    try {
-        const { title, author, published_year } = req.body;
+  try {
+    const { title, author, publishedYear } = req.body;
 
-        if (!title || !author) {
-            return badRequest(res, 'Title and author are required');
-        }
-
-        const newBook = await bookService.createBook({ title, author, published_year }, res);
-        created(res, 'Book created successfully', newBook);
-    } catch (error) {
-        console.error('Error in createBook:', error);
-        badRequest(res, error.message);
+    if (!title || !author) {
+      return badRequest(res, "Title and author are required");
     }
+
+    const newBook = await bookService.createBook(
+      { title, author, publishedYear },
+      res
+    );
+    created(res, "Book created successfully", newBook);
+  } catch (error) {
+    console.error("Error in createBook:", error);
+    badRequest(res, error.message);
+  }
 };
 
 /**
@@ -60,29 +63,29 @@ export const createBook = async (req, res) => {
  * @param {Object} res - Express response object
  */
 export const updateBook = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, author, published_year } = req.body;
+  try {
+    const { id } = req.params;
+    const { title, author, publishedYear } = req.body;
 
-        if (!title || !author) {
-            return badRequest(res, 'Title and author are required');
-        }
-
-        const updatedBook = await bookService.updateBook(
-            parseInt(id),
-            { title, author, published_year },
-            res
-        );
-
-        if (!updatedBook) {
-            return notFound(res, 'Book not found');
-        }
-
-        success(res, updatedBook, 'Book updated successfully');
-    } catch (error) {
-        console.error('Error in updateBook:', error);
-        serverError(res, 'Failed to update book');
+    if (!title || !author) {
+      return badRequest(res, "Title and author are required");
     }
+
+    const updatedBook = await bookService.updateBook(
+      parseInt(id),
+      { title, author, publishedYear },
+      res
+    );
+
+    if (!updatedBook) {
+      return notFound(res, "Book not found");
+    }
+
+    success(res, updatedBook, "Book updated successfully");
+  } catch (error) {
+    console.error("Error in updateBook:", error);
+    serverError(res, "Failed to update book");
+  }
 };
 
 /**
