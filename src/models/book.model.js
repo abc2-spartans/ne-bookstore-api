@@ -10,22 +10,22 @@ class Book {
     }
 
     static create(book, callback) {
-        const { title, author, published_year } = book;
+        const { title, author, publishedYear } = book;
         return db.run(
-            'INSERT INTO books (title, author, published_year) VALUES (?, ?, ?)',
-            [title, author, published_year],
-            function (err) {
-                callback(err, { id: this.lastID, ...book });
-            }
+          "INSERT INTO books (title, author, publishedYear) VALUES (?, ?, ?)",
+          [title, author, publishedYear],
+          function (err) {
+            callback(err, { id: this.lastID, ...book });
+          }
         );
     }
 
     static update(id, book, callback) {
-        const { title, author, published_year } = book;
+        const { title, author, publishedYear } = book;
         return db.run(
-            'UPDATE books SET title = ?, author = ?, published_year = ? WHERE id = ?',
-            [title, author, published_year, id],
-            callback
+          "UPDATE books SET title = ?, author = ?, publishedYear = ? WHERE id = ?",
+          [title, author, publishedYear, id],
+          callback
         );
     }
 

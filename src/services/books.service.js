@@ -53,7 +53,7 @@ export const getBookById = async (id, res) => {
  */
 export const createBook = async (bookData, res) => {
     try {
-        const { title, author, published_year } = bookData;
+        const { title, author, publishedYear } = bookData;
 
         if (!title || !author) {
             throw new Error('Title and author are required');

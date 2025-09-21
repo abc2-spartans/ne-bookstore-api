@@ -78,7 +78,7 @@ router.get('/:id', getBook);
  *                 type: string
  *               author:
  *                 type: string
- *               published_year:
+ *               publishedYear:
  *                 type: integer
  *     responses:
  *       201:
@@ -112,7 +112,7 @@ router.post('/', createBook);
  *                 type: string
  *               author:
  *                 type: string
- *               published_year:
+ *               publishedYear:
  *                 type: integer
  *     responses:
  *       200:

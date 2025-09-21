@@ -22,20 +22,23 @@ export const db = new sqlite3.Database(dbPath, (err) => {
 export const initDatabase = () => {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            db.run(`CREATE TABLE IF NOT EXISTS books (
+            db.run(
+              `CREATE TABLE IF NOT EXISTS books (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 author TEXT NOT NULL,
-                published_year INTEGER
-            )`, (err) => {
+                publishedYear INTEGER
+            )`,
+              (err) => {
                 if (err) {
-                    console.error("Error creating books table:", err);
-                    reject(err);
+                  console.error("Error creating books table:", err);
+                  reject(err);
                 } else {
-                    console.log("Database tables initialized");
-                    resolve();
+                  console.log("Database tables initialized");
+                  resolve();
                 }
-            });
+              }
+            );
         });
     });
 };

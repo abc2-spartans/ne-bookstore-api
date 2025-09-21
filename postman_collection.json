@@ -30,7 +30,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"author\": \"willian h.mclaren 2\",\n    \"title\":\"make your bed 3\",\n    \"published_year\": 2016\n}",
+					"raw": "{\n\t\"author\": \"willian h.mclaren 2\",\n    \"title\":\"make your bed 3\",\n    \"publishedYear\": 2016\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -155,7 +155,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"author\": \"willian h.mclaren\",\n    \"title\":\"make your bed\",\n    \"published_year\":\"2016\"\n}",
+					"raw": "{\n\t\"author\": \"willian h.mclaren\",\n    \"title\":\"make your bed\",\n    \"publishedYear\":\"2016\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
