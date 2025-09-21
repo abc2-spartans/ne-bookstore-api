@@ -1,54 +1,40 @@
-import { Pool } from "pg";
+import { Sequelize } from "sequelize";
 import { getConfig } from "../config/index.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 const config = getConfig();
 
-// Create a new PostgreSQL pool
-export const db = new Pool({
-  user: config.database.postgres.user,
-  host: config.database.postgres.host,
-  database: config.database.postgres.database,
-  password: config.database.postgres.password,
-  port: config.database.postgres.port,
-});
-
-// Test the database connection
-db.query("SELECT NOW()", (err) => {
-  if (err) {
-    console.error("Failed to connect to PostgreSQL:", err);
-  } else {
-    console.log("Connected to PostgreSQL database");
+// Create a new Sequelize instance for PostgreSQL
+export const sequelize = new Sequelize(
+  config.database.postgres.database,
+  config.database.postgres.user,
+  config.database.postgres.password,
+  {
+    host: config.database.postgres.host,
+    port: config.database.postgres.port,
+    dialect: "postgres",
+    logging: false, // Set true to see SQL logs
   }
-});
+);
 
-// Initialize database tables
-export const initDatabase = async () => {
-  const client = await db.connect();
+// Test the connection
+export const testSequelizeConnection = async () => {
   try {
-    await client.query("BEGIN");
-
-    await client.query(`
-            CREATE TABLE IF NOT EXISTS books (
-                id SERIAL PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                author VARCHAR(255) NOT NULL,
-                publishedYear INTEGER
-            )`);
-
-    await client.query("COMMIT");
-    console.log("Database tables created successfully");
-  } catch (err) {
-    console.error("Error initializing database:", err);
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
+    await sequelize.authenticate();
+    console.log("Sequelize: Connected to PostgreSQL database");
+  } catch (error) {
+    console.error("Sequelize: Unable to connect to the database:", error);
   }
 };
 
-export default {
-  db,
-  initDatabase,
+// Initialize database tables (sync models)
+export const initDatabase = async () => {
+  try {
+    await sequelize.sync({ force: false }); // Set force: true to drop and recreate tables
+    console.log("Database tables created successfully (Sequelize)");
+  } catch (err) {
+    console.error("Error initializing database (Sequelize):", err);
+    throw err;
+  }
 };

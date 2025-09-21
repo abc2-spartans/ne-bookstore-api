@@ -1,5 +1,5 @@
-import Book from '../models/book.model.js';
-import { notFound } from '../utils/apiResponse.js';
+import Book from "../db/books.db.js";
+import { notFound } from "../utils/apiResponse.js";
 
 /**
  * Get all books
