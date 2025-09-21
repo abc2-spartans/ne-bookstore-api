@@ -39,14 +39,14 @@ export const getBook = async (req, res) => {
  */
 export const createBook = async (req, res) => {
   try {
-    const { title, author, published_year } = req.body;
+    const { title, author, publishedYear } = req.body;
 
     if (!title || !author) {
       return badRequest(res, "Title and author are required");
     }
 
     const newBook = await bookService.createBook(
-      { title, author, published_year },
+      { title, author, publishedYear },
       res
     );
     created(res, "Book created successfully", newBook);
@@ -63,7 +63,7 @@ export const createBook = async (req, res) => {
 export const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, author, published_year } = req.body;
+    const { title, author, publishedYear } = req.body;
 
     if (!title || !author) {
       return badRequest(res, "Title and author are required");
@@ -71,7 +71,7 @@ export const updateBook = async (req, res) => {
 
     const updatedBook = await bookService.updateBook(
       id,
-      { title, author, published_year },
+      { title, author, publishedYear },
       res
     );
     console.log({ updatedBook });

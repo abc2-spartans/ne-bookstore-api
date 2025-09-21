@@ -43,7 +43,7 @@ const options = {
             },
             title: { type: "string", description: "Book title" },
             author: { type: "string", description: "Book author" },
-            published_year: {
+            publishedYear: {
               type: "integer",
               description: "Year of publication",
             },
@@ -54,9 +54,9 @@ const options = {
             id: "652f9c7d7c7e4f1b8c8e4d1a",
             title: "The Great Gatsby",
             author: "F. Scott Fitzgerald",
-            published_year: 1925,
-            created_at: "2023-01-01T00:00:00.000Z",
-            updated_at: "2023-01-01T00:00:00.000Z",
+            publishedYear: 1925,
+            createdAt: "2023-01-01T00:00:00.000Z",
+            updatedAt: "2023-01-01T00:00:00.000Z",
           },
         },
         BookInput: {
@@ -65,12 +65,12 @@ const options = {
           properties: {
             title: { type: "string" },
             author: { type: "string" },
-            published_year: { type: "integer" },
+            publishedYear: { type: "integer" },
           },
           example: {
             title: "The Great Gatsby",
             author: "F. Scott Fitzgerald",
-            published_year: 1925,
+            publishedYear: 1925,
           },
         },
       },
