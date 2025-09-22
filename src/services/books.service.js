@@ -1,5 +1,4 @@
 import Book from "../db/books.db.js";
-import { notFound } from "../utils/apiResponse.js";
 
 /**
  * Get all books
@@ -23,7 +22,7 @@ export const getBookById = async (id) => {
   try {
     const book = await Book.getById(id);
     if (!book) {
-      return notFound("Book not found");
+      return null;
     }
     return book;
   } catch (error) {

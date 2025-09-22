@@ -6,25 +6,25 @@ class Book {
   }
 
   static async getById(id) {
-    return await Book.findByPk(id);
+    return await BookModel.findByPk(id);
   }
 
   static async create(book) {
-    return await Book.create(book);
+    return await BookModel.create(book);
   }
 
   static async update(id, book) {
-    const [updated] = await Book.update(book, {
+    const [updated] = await BookModel.update(book, {
       where: { id },
     });
     if (updated) {
-      return await Book.findByPk(id);
+      return await BookModel.findByPk(id);
     }
     return null;
   }
 
   static async delete(id) {
-    const book = await Book.findByPk(id);
+    const book = await BookModel.findByPk(id);
     if (book) {
       await book.destroy();
       return book;
