@@ -1,5 +1,19 @@
 # Node-Express Bookstore API (MongoDB + Mongoose version)
 
+## 🌿 Branches
+
+This repository contains several branches, each demonstrating different implementations and database options:
+
+- **`main`**: Latest production-ready code with MongoDB and Mongoose ORM
+- **`mongodb`**: REST APIs with MongoDB using native MongoDB driver
+- **`mongodb-orm`**: REST APIs with MongoDB using Mongoose ORM
+- **`postgres`**: REST APIs with PostgreSQL database
+- **`postgres-orm`**: REST APIs with PostgreSQL using an ORM
+- **`sqlite`**: REST APIs with SQLite database (modular codebase)
+- **`sqlite-monofile`**: Basic implementation with SQLite in a single `app.js` file
+- **`noderaw`**: Pure Node.js server implementation without Express
+- **`release`**: Release branch for stable versions
+
 ## MongoDB with Mongoose ORM
 
 This project now uses [Mongoose](https://mongoosejs.com/) as the ORM for MongoDB. All database operations are handled via Mongoose models and schemas.
