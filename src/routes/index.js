@@ -55,7 +55,48 @@ router.get("/health", (req, res) => {
   });
 });
 
-// Login route to generate JWT token
+/**
+ * @swagger
+ * /api/v1/login:
+ *   post:
+ *     summary: Generate RSA JWT token
+ *     description: Generate a JWT token for authentication. Send your username in the request body.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: johndoe
+ *     responses:
+ *       200:
+ *         description: JWT token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Username required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Username required
+ */
 router.post("/login", async (req, res) => {
   const { username } = req.body;
   if (!username) {
