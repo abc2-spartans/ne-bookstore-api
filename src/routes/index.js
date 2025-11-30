@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import booksRouter from './books.js';
 import { getConfig } from '../config/index.js';
 import swaggerSpec from '../config/swagger.config.js';
+import auth from "../middleware/auth.js";
 
 dotenv.config();
 
@@ -23,17 +24,17 @@ const baseURL = `http://${hostname}:${port}/api/v1`;
  *       200:
  *         description: API is running
  */
-router.get('/', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        service: 'Bookstore API',
-        version: '1.0.0',
-        documentation: `${baseURL}/docs`,
-        endpoints: {
-            books: `${baseURL}/books`
-        }
-    });
+router.get("/", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    service: "Bookstore API",
+    version: "1.0.0",
+    documentation: `${baseURL}/docs`,
+    endpoints: {
+      books: `${baseURL}/books`,
+    },
+  });
 });
 
 /**
@@ -46,15 +47,15 @@ router.get('/', (req, res) => {
  *       200:
  *         description: Service is healthy
  */
-router.get('/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString()
-    });
+router.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // API v1 routes
-router.use("/books", booksRouter);
+router.use("/books", auth, booksRouter);
 
 // API Documentation with Swagger
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {

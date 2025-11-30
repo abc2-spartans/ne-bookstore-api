@@ -177,6 +177,30 @@ ne-bookstore-api/
 - **[Mongoose](https://mongoosejs.com/)** - MongoDB ORM
 - **[Nodemon](https://nodemon.io/)** - Development auto-reload
 
+
+## 🔒 Authentication
+
+All `/api/v1/books` endpoints are protected with JWT authentication. You must provide a valid JWT token in the `Authorization` header:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+Set your JWT secret in the `.env` file:
+
+```
+JWT_SECRET=your_secret_key(a-string-secret-at-least-256-bits-long)
+```
+
+You can generate a token using any JWT library. Example payload:
+
+```
+{
+  "userId": "123",
+  "email": "user@example.com"
+}
+```
+
 ## 🧪 Testing the API
 
 ### Using curl
