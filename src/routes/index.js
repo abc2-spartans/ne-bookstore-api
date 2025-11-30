@@ -6,6 +6,7 @@ import booksRouter from './books.js';
 import { getConfig } from '../config/index.js';
 import swaggerSpec from '../config/swagger.config.js';
 import auth from "../middleware/auth.js";
+import { generateToken } from "../services/jwt.service.js";
 
 dotenv.config();
 
@@ -52,6 +53,16 @@ router.get("/health", (req, res) => {
     status: "healthy",
     timestamp: new Date().toISOString(),
   });
+});
+
+// Login route to generate JWT token (symmetric auth)
+router.post("/login", (req, res) => {
+  const { username } = req.body;
+  if (!username) {
+    return res.status(400).json({ message: "Username required" });
+  }
+  const token = generateToken(username);
+  res.json({ token });
 });
 
 // API v1 routes

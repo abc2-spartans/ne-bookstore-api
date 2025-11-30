@@ -178,12 +178,43 @@ ne-bookstore-api/
 - **[Nodemon](https://nodemon.io/)** - Development auto-reload
 
 
+
+
 ## 🔒 Authentication
 
-All `/api/v1/books` endpoints are protected with JWT authentication. You must provide a valid JWT token in the `Authorization` header:
+All `/api/v1/books` endpoints require a valid JWT token. You must include the token in the `Authorization` header of your request:
 
 ```
 Authorization: Bearer <your_jwt_token>
+```
+
+Example using curl:
+```bash
+curl http://localhost:5000/api/v1/books \
+  -H "Authorization: Bearer <your_jwt_token>"
+```
+
+Other endpoints like `/api/v1`, `/api/v1/health`, and `/api/v1/login` do NOT require a token.
+
+### How to Get a Token
+
+Use the `/api/v1/login` endpoint to generate a token:
+
+**POST** `/api/v1/login`
+**Content-Type:** `application/json`
+
+**Request Body:**
+```json
+{
+  "username": "your_username"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "<JWT token>"
+}
 ```
 
 Set your JWT secret in the `.env` file:
@@ -192,14 +223,7 @@ Set your JWT secret in the `.env` file:
 JWT_SECRET=your_secret_key(a-string-secret-at-least-256-bits-long)
 ```
 
-You can generate a token using any JWT library. Example payload:
-
-```
-{
-  "userId": "123",
-  "email": "user@example.com"
-}
-```
+The authentication flow uses the modular `jwt.service.js` for both token creation and verification.
 
 ## 🧪 Testing the API
 
