@@ -9,6 +9,33 @@
 	},
 	"item": [
 		{
+			"name": "Authenticate/Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{apiVersion}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{apiVersion}}",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create Book",
 			"event": [
 				{
@@ -63,13 +90,21 @@
 							"});"
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
@@ -108,16 +143,31 @@
 							"});"
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"url": {
 					"raw": "{{baseUrl}}/{{apiVersion}}/books/{{id}}",
 					"host": [
@@ -140,17 +190,25 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful PUT request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
-							"});",
 							""
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
@@ -190,11 +248,22 @@
 							""
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
@@ -243,6 +312,7 @@
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -252,6 +322,7 @@
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -270,6 +341,10 @@
 		{
 			"key": "id",
 			"value": "1"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3NjQ1MzA0OTIsImV4cCI6MTc2NDUzNDA5Mn0.cXbGNe_DVoow_0APiu9pP2Qf7wpvAaGXN_mrOtDwkd2vjAlVOVGBV5lxaHT4bHTRsu1tD7tbllyxloSyrGZfhnpaf31j9DLdru_zaVNeADSS1nV3QU7Bi9n5XLcGwegObNJGcBrrhhBRhCaKAkzUS9YU7tz3lCH3vGUwDeh2v-QCCLLYJjSnynBgkVXeAQYzVySy0umw2m2QjLMlpmzSbd6hTteNSICO3Q9hwXk7V6dJhBx9MdYcHTGifhH3-hJKQOHjIXXCXcuigJ5WCcIKd7QEv039_hUTMktF7tXxiuhzLOmFbMxaMBYuqmWlhC5mcirFvr6xAxfSo8_3XlV91g"
 		}
 	]
 }
