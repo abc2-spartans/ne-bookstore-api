@@ -44,7 +44,31 @@ yarn start
 
 The server will start on `http://localhost:5000`
 
+
 ## 📚 API Endpoints
+
+### Generate JWT Token
+- **POST** `/api/v1/login`
+- **Content-Type:** `application/json`
+
+**Request Body:**
+```json
+{
+  "username": "your_username"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "<JWT token>"
+}
+```
+
+Use this token in the `Authorization` header for all protected endpoints:
+```
+Authorization: Bearer <JWT token>
+```
 
 ### Health Check
 - **GET** `/` - Welcome message
@@ -216,6 +240,33 @@ The API returns appropriate HTTP status codes:
 
 - `yarn start` - Start the production server
 - `yarn dev` - Start the development server with auto-reload
+
+## 🔒 Authentication
+
+All `/api/v1/books` endpoints are protected with JWT authentication (RS256 asymmetric).
+Generate a token using the `/api/v1/login` endpoint as described above.
+
+Set your public/private keys in the `config/public.pem` and `config/private.pem` files, or via environment variables `PUBLIC_KEY` and `PRIVATE_KEY`.
+
+### Creating RSA keys
+
+Generate pub,priv keys
+
+1. Generate RSA private key
+   openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:512
+
+2. Generate RSA public key from the generated private key
+   openssl rsa -in private_key.pem -pubout -out public_key.pem
+
+3. Add the keys in env file
+
+echo "PRIVATE_KEY=\"`sed -E 's/$/\\\n/g' private_key.pem`\"" >> .env
+echo "PUBLIC_KEY=\"`sed -E 's/$/\\\n/g' public_key.pem`\"" >> .env
+
+4. Now edit the variable in .env to a single line
+5. Delete the private_key.pem and public_key.pem files
+   Please check your env file where u can see the new PRIVATE_KEY, PUBLIC_KEY variables.
+   Then you can delete the private_key.pem and public_key.pem files
 
 ## 🔒 Environment Variables
 
