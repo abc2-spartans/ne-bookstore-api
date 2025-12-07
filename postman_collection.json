@@ -23,12 +23,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/{{apiVersion}}/login",
+					"raw": "{{baseUrl}}/{{apiVersion}}/auth/login",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"{{apiVersion}}",
+						"auth",
 						"login"
 					]
 				}
